@@ -160,7 +160,7 @@ export default class NavigationBar extends Component {
     }
 
     const iPhoneXPadding = {
-      paddingTop: (isIphoneX) ? 20 : 0,
+      paddingTop: (this.isIphoneX()) ? 20 : 0,
     };
 
     return (
