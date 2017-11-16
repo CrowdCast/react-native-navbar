@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Platform,
+  Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import ViewPropTypes from './lib';
@@ -21,6 +22,8 @@ const ButtonShape = {
 const TitleShape = {
   title: PropTypes.string.isRequired,
   tintColor: PropTypes.string,
+  ellipsizeMode: PropTypes.string,
+  numberOfLines: PropTypes.number
 };
 
 const StatusBarShape = {
@@ -48,6 +51,16 @@ function getButtonElement(data, style) {
   );
 }
 
+function isIphoneX() {
+  let dimen = Dimensions.get('window');
+  return (
+    Platform.OS === 'ios' &&
+    !Platform.isPad &&
+    !Platform.isTVOS &&
+    (dimen.height === 812 || dimen.width === 812)
+  );
+}
+
 function getTitleElement(data) {
   if (!data || data.props) {
     return <View style={styles.customTitle}>{data}</View>;
@@ -57,7 +70,7 @@ function getTitleElement(data) {
 
   return (
     <View style={styles.navBarTitleContainer}>
-      <Text style={[styles.navBarTitleText, data.style, colorStyle]}>
+      <Text ellipsizeMode={data.ellipsizeMode} numberOfLines={data.numberOfLines} style={[styles.navBarTitleText, data.style, colorStyle]}>
         {data.title}
       </Text>
     </View>
@@ -146,8 +159,12 @@ export default class NavigationBar extends Component {
         <View style={[styles.statusBar, customStatusBarTintColor]} /> : null;
     }
 
+    const iPhoneXPadding = {
+      paddingTop: (isIphoneX()) ? 20 : 0,
+    };
+
     return (
-      <View style={[styles.navBarContainer, containerStyle, customTintColor]}>
+      <View style={[styles.navBarContainer, containerStyle, customTintColor, iPhoneXPadding]}>
         {statusBar}
         <View style={[styles.navBar, style]}>
           {getTitleElement(title)}
